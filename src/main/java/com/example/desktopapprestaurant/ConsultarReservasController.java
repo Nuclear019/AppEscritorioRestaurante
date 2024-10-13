@@ -24,6 +24,7 @@ import java.util.List;
 
 public class ConsultarReservasController {
 
+    public Button actualizarReservas;
     @FXML
     private TableView<Reserva> tableView;
 
@@ -58,7 +59,7 @@ public class ConsultarReservasController {
         mesaColumn.setStyle("-fx-font-size: 16px;");
         detallesColumn.setStyle("-fx-font-size: 16px;");
 
-
+    actualizarReservas.setOnAction(event -> cargarReservasView());
 
 
         // Inicializar las columnas
@@ -84,7 +85,7 @@ public class ConsultarReservasController {
         }
     }
 
-    private List<Reserva> getReservas() {
+    public List<Reserva> getReservas() {
         try {
             HttpClient client = HttpClient.newHttpClient();
             HttpRequest request = HttpRequest.newBuilder()

@@ -36,9 +36,9 @@ public class MainController {
     public void initialize() {
         cargarVista("listaReservas.fxml");
         menuItemConsultarReservas.setOnAction(event -> cargarVista("listaReservas.fxml"));
-        menuItemAñadirReserva.setOnAction(event -> mostrarModal());
+        menuItemAñadirReserva.setOnAction(event -> mostrarModal("añadirReserva.fxml"));
         menuItemConsultarCarta.setOnAction(event -> cargarVista("listaCarta.fxml"));
-        menuItemAñadirArticulo.setOnAction(event -> cargarVista("añadirArticulo.fxml"));
+        menuItemAñadirArticulo.setOnAction(event -> mostrarModal("añadirArticulo.fxml"));
 
         menuItemCerrarSesion.setOnAction(event -> cerrarSesion());
     }
@@ -69,10 +69,10 @@ public class MainController {
     }
 
     // Método para mostrar un modal
-    public void mostrarModal() {
+    public void mostrarModal(String fxmlFile) {
         try {
             // Cargar el archivo FXML para el modal
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("añadirReserva.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlFile));
             Node contenido = loader.load();
 
             // Crear un nuevo escenario (Stage) para el modal
@@ -99,6 +99,5 @@ public class MainController {
         }
     }
 
-    public void setUserLogeado(User userLogeado) {
-    }
+
 }

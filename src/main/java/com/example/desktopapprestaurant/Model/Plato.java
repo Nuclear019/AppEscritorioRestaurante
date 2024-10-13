@@ -10,15 +10,19 @@ public class Plato {
 
     private boolean masVendido;
 
+    private CategoriaPlato idPlatoCategoria;
+
     public Plato() {
     }
 
-    public Plato(Long idPlato, String nombrePlato, String detallesPlato, Double precioPlato, String imagenPlato) {
+    public Plato(Long idPlato, String nombrePlato, String detallesPlato, Double precioPlato, String imagenPlato, boolean masVendido, CategoriaPlato platoCategoria) {
         this.idPlato = idPlato;
         this.nombrePlato = nombrePlato;
         this.detallesPlato = detallesPlato;
         this.precioPlato = precioPlato;
         this.imagenPlato = imagenPlato;
+        this.masVendido = masVendido;
+        this.idPlatoCategoria = platoCategoria;
     }
 
     public Long getIdPlato() {
@@ -67,5 +71,26 @@ public class Plato {
 
     public void setMasVendido(boolean masVendido) {
         this.masVendido = masVendido;
+    }
+
+    public CategoriaPlato getPlatoCategoria() {
+        return idPlatoCategoria;
+    }
+
+    public void setPlatoCategoria(CategoriaPlato platoCategoria) {
+        this.idPlatoCategoria = platoCategoria;
+    }
+
+    @Override
+    public String toString() {
+        return "Plato{" +
+                "idPlato=" + idPlato +
+                ", nombrePlato='" + nombrePlato + '\'' +
+                ", detallesPlato='" + detallesPlato + '\'' +
+                ", precioPlato=" + precioPlato +
+                ", imagenPlato='" + imagenPlato + '\'' +
+                ", masVendido=" + masVendido +
+                ", idPlatoCategoria =" + idPlatoCategoria +
+                '}';
     }
 }

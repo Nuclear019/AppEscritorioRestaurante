@@ -33,6 +33,7 @@ public class LoginController {
         String username = txtUsername.getText();
         String password = txtPassword.getText();
 
+
         if (login(username, password)) {
             // Cambiar a la nueva ventana
             try {
@@ -43,7 +44,6 @@ public class LoginController {
                 // Obtener el controlador de la nueva ventana
                 MainController mainWindowController = loader.getController();
                 // Pasar el nombre de usuario al nuevo controlador si es necesario
-                mainWindowController.setUserLogeado(userLogeado); // Asegúrate de tener un método para esto
 
                 // Obtener la instancia del Stage actual y cambiar a la nueva escena
                 Stage stage = (Stage) txtUsername.getScene().getWindow();
@@ -57,12 +57,6 @@ public class LoginController {
                 alert.setContentText("Error al cargar la ventana principal.");
                 alert.show();
             }
-        } else {
-            // Si el inicio de sesión falla, puedes mostrar un mensaje de error aquí
-            Alert alert = new Alert(Alert.AlertType.ERROR);
-            alert.setTitle("Error no login");
-            alert.setContentText("Usuario o contraseña incorrectos");
-            alert.show();
         }
     }
 
@@ -85,11 +79,19 @@ public class LoginController {
                 userLogeado = new User(); // Crea tu objeto User aquí según sea necesario
                 return true; // Devuelve true si el login es exitoso
             } else {
-                System.out.println("Login fallido. Código de respuesta: " + response.statusCode());
+                // Si el inicio de sesión falla, puedes mostrar un mensaje de error aquí
+                Alert alert = new Alert(Alert.AlertType.ERROR);
+                alert.setTitle("Error no login");
+                alert.setContentText("Usuario o contraseña incorrectos");
+                alert.show();
                 return false; // Devuelve false si el login falla
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            // Si el inicio de sesión falla, puedes mostrar un mensaje de error aquí
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Error en el servidor");
+            alert.setContentText("Ha ocurrido un error en el servidor. Por favor, inténtelo de nuevo más tarde.");
+            alert.show();
             return false; // También devuelve false en caso de excepción
         }
     }

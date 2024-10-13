@@ -3,12 +3,10 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<AnchorPane prefHeight="244.0" prefWidth="555.0" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.desktopapprestaurant.ListaCartaController">
-   <ComboBox fx:id="comboBoxCategoria" layoutX="432.0" layoutY="14.0" onAction="#handleCategoriaSeleccionada" prefHeight="32.0" prefWidth="109.0" AnchorPane.rightAnchor="14.0" AnchorPane.topAnchor="14.0" />
-   <AnchorPane layoutY="50.0" prefHeight="144.0" prefWidth="555.0" AnchorPane.bottomAnchor="50.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="50.0">
-      <children>
-         <GridPane fx:id="gridPane" prefHeight="144.0" prefWidth="555.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
-      </children>
-   </AnchorPane>
-   <Pagination fx:id="pagination" layoutX="50.0" layoutY="46.0" prefHeight="194.0" prefWidth="512.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="46.0" />
-</AnchorPane>
+<VBox alignment="CENTER" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.desktopapprestaurant.ListaCartaController">
+   <children>
+      <ComboBox fx:id="comboBoxCategoria" onAction="#handleCategoriaSeleccionada" prefHeight="32.0" prefWidth="109.0" />
+      <GridPane fx:id="gridPane" alignment="CENTER" prefHeight="251.0" prefWidth="555.0" />
+      <Pagination fx:id="pagination" prefHeight="194.0" prefWidth="512.0" />
+   </children>
+</VBox>

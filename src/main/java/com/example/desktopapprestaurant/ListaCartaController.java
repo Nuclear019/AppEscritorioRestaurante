@@ -15,11 +15,15 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 
+import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.InputStream;
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.List;
 import java.util.Objects;
 
@@ -60,6 +64,7 @@ public class ListaCartaController {
             pagination.setPageCount((int) Math.ceil((double) articulos.size() / ITEMS_PER_PAGE));
             pagination.setCurrentPageIndex(0); // Reiniciar a la primera página
             pagination.setPageFactory(this::createPage); // Actualizar la paginación
+
         }
     }
     private Node createPage(int pageIndex) {
@@ -124,10 +129,20 @@ public class ListaCartaController {
 
 
     private AnchorPane createItemBox(Plato plato) {
+        String imagenBase64 = plato.getImagenPlato();
         Image image;
-        if (plato.getImagenPlato() != null) {
-            image = new Image(plato.getImagenPlato());
+
+        if (imagenBase64 != null) {
+            // Decodificar el String Base64
+            byte[] imageBytes = Base64.getDecoder().decode(imagenBase64);
+
+            // Crear un InputStream a partir de los bytes decodificados
+            InputStream inputStream = new ByteArrayInputStream(imageBytes);
+
+            // Crear la imagen
+            image = new Image(inputStream);
         } else {
+            // Usar la imagen por defecto
             image = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/image/Logo.png")));
         }
 

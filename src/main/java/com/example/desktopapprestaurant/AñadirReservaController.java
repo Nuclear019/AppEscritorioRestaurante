@@ -4,9 +4,11 @@ import com.example.desktopapprestaurant.Model.Mesa;
 import com.example.desktopapprestaurant.Model.Reserva;
 import com.google.gson.reflect.TypeToken;
 import javafx.collections.FXCollections;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import com.google.gson.Gson;
+import javafx.stage.Stage;
 
 import java.lang.reflect.Type;
 import java.net.URI;
@@ -22,6 +24,7 @@ public class AñadirReservaController {
 
     private final String añaadirReservaUrl = "http://localhost:8080/api/v1/reservas";
     private final String actualizarReservaUrl = "http://localhost:8080/api/v1/reservas";
+
 
 
     public TextField nombreReserva;
@@ -150,8 +153,22 @@ public class AñadirReservaController {
             // Manejar la respuesta
             if (response.statusCode() == 200) {
                 System.out.println("Operación realizada con éxito: " + response.body());
+                Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                alert.setTitle("Nueva reserva");
+                alert.setHeaderText("Se ha añadido una nueva reserva con éxito.");
+                alert.setContentText("La reserva se ha añadido correctamente.");
+                alert.showAndWait();
+                Stage stage = (Stage) nombreReserva.getScene().getWindow();  // Obtener el Stage
+                stage.close();
+
+
             } else {
-                System.out.println("Error en la operación: " + response.body());
+                Alert alert = new Alert(Alert.AlertType.ERROR);
+                alert.setTitle("Error");
+                alert.setHeaderText("Error al añadir la reserva.");
+                alert.setContentText("Ha ocurrido un error al añadir la reserva. Por favor, inténtelo de nuevo.");
+                alert.showAndWait();
+
             }
 
         } catch (Exception e) {
@@ -173,8 +190,6 @@ public class AñadirReservaController {
         personasReserva.setText(String.valueOf(reserva.getPersonasReserva()));
         detallesReserva.setText(reserva.getDetallesReserva());
     }
-
-
 
 
 }

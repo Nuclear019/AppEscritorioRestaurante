@@ -1,48 +1,57 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.geometry.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.image.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<AnchorPane centerShape="false" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" prefHeight="501.0" prefWidth="704.0" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.desktopapprestaurant.AñadirReservaController">
-    <children>
-        <Label fx:id="labelModalActualizarReserva" alignment="TOP_CENTER" contentDisplay="CENTER" layoutX="111.0" layoutY="14.0" prefHeight="25.0" prefWidth="337.0" text="Añadir Articulo" textAlignment="CENTER">
+
+<VBox alignment="TOP_CENTER" prefHeight="605.0" prefWidth="919.0" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.desktopapprestaurant.AñadirArticuloController">
+   <children>
+        <!-- Título -->
+        <Label fx:id="labelModalActualizarReserva" alignment="TOP_CENTER" prefHeight="25.0" prefWidth="337.0" text="Añadir Plato" textAlignment="CENTER">
             <font>
                 <Font size="21.0" />
             </font>
         </Label>
-        <GridPane layoutX="116.0" layoutY="76.0" prefHeight="401.0" prefWidth="473.0" AnchorPane.bottomAnchor="24.0" AnchorPane.topAnchor="76.0">
-            <columnConstraints>
-            <ColumnConstraints hgrow="SOMETIMES" maxWidth="399.0" minWidth="10.0" prefWidth="376.0" />
-                <ColumnConstraints hgrow="SOMETIMES" maxWidth="461.0" minWidth="10.0" prefWidth="97.0" />
-            </columnConstraints>
-            <rowConstraints>
-                <RowConstraints maxHeight="163.0" minHeight="0.0" prefHeight="137.0" />
-                <RowConstraints maxHeight="232.0" minHeight="0.0" prefHeight="57.0" />
-                <RowConstraints maxHeight="300.0" minHeight="0.0" prefHeight="158.0" vgrow="ALWAYS" />
-            <RowConstraints maxHeight="287.0" minHeight="0.0" prefHeight="49.0" />
-            </rowConstraints>
-            <children>
-                <TextField fx:id="nombreReserva" prefHeight="38.0" prefWidth="209.0" promptText="Nombre" GridPane.rowIndex="1" />
-                <TextField fx:id="correoReserva" prefHeight="38.0" prefWidth="209.0" promptText="Precio" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-                <Button fx:id="btonActualizarReserva" onAction="#añadirOActualizarReserva" prefHeight="43.0" prefWidth="103.0" text="Guardar" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="3">
-                    <GridPane.margin>
-                        <Insets top="20.0" />
-                    </GridPane.margin></Button>
-                <TextArea fx:id="detallesReserva" prefHeight="139.0" prefWidth="309.0" promptText="Detalles de la reserva..." GridPane.rowIndex="2" />
-            <AnchorPane prefHeight="163.0" prefWidth="265.0">
-               <children>
-                  <ImageView fitHeight="150.0" fitWidth="178.0" pickOnBounds="true" preserveRatio="true" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0">
-                     <viewport>
-                        <Rectangle2D />
-                     </viewport>
-                  </ImageView>
-               </children>
-            </AnchorPane>
 
-            </children>
+        <!-- Grid para los campos -->
+        <GridPane alignment="TOP_CENTER" hgap="15" prefHeight="480.0" prefWidth="625.0" vgap="15" VBox.vgrow="NEVER">
+            <columnConstraints>
+                <ColumnConstraints hgrow="SOMETIMES" maxWidth="300.0" minWidth="159.0" prefWidth="159.0" />
+                <ColumnConstraints hgrow="SOMETIMES" maxWidth="451.0" minWidth="310.0" prefWidth="451.0" />
+            </columnConstraints>
+
+            <rowConstraints>
+                <RowConstraints prefHeight="50.0" />
+                <RowConstraints prefHeight="50.0" />
+                <RowConstraints maxHeight="145.0" minHeight="95.0" prefHeight="95.0" />
+                <RowConstraints maxHeight="105.0" minHeight="55.0" prefHeight="105.0" />
+                <RowConstraints prefHeight="50.0" />
+            </rowConstraints>
+
+            <!-- Nombre del plato -->
+            <Label text="Nombre del Plato:" GridPane.columnIndex="0" GridPane.rowIndex="0" />
+            <TextField fx:id="nombrePlato" prefHeight="38.0" promptText="Nombre" GridPane.columnIndex="1" GridPane.rowIndex="0" />
+
+            <!-- Precio del plato -->
+            <Label text="Precio:" GridPane.columnIndex="0" GridPane.rowIndex="1" />
+            <TextField fx:id="precioPlato" prefHeight="38.0" promptText="Precio" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+
+            <!-- Detalles del plato -->
+            <Label text="Descripción:" GridPane.columnIndex="0" GridPane.rowIndex="2" GridPane.valignment="TOP" />
+            <TextArea fx:id="detallesPlato" prefHeight="120.0" prefWidth="300.0" promptText="Descripción del plato..." GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="2" GridPane.valignment="CENTER" />
+
+            <!-- Categoría del plato -->
+            <Label text="Categoría:" GridPane.columnIndex="0" GridPane.rowIndex="3" />
+            <ComboBox fx:id="categoriaPlato" promptText="Seleccione una categoría" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+
+            <!-- Añadir imagen -->
+            <Button onAction="#seleccionarFoto" text="Añadir foto" GridPane.columnIndex="0" GridPane.rowIndex="4" />
+            <ImageView fx:id="imagenPlato" fitHeight="104.0" fitWidth="146.0" preserveRatio="true" GridPane.columnIndex="1" GridPane.rowIndex="4" />
         </GridPane>
-    </children>
-</AnchorPane>
+
+        <!-- Botón para guardar -->
+        <Button fx:id="btonGuardarPlato" onAction="#añadirOActualizarPlato" prefHeight="40.0" prefWidth="100.0" text="Guardar" />
+   </children>
+</VBox>
