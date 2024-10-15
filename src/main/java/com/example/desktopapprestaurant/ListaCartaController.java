@@ -1,22 +1,25 @@
 package com.example.desktopapprestaurant;
 
 import com.example.desktopapprestaurant.Model.Plato;
+import com.example.desktopapprestaurant.Model.Reserva;
 import com.google.gson.Gson;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.Label;
-import javafx.scene.control.Pagination;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.GridPane;
-import javafx.scene.layout.Priority;
-import javafx.scene.layout.VBox;
+import javafx.scene.input.MouseButton;
+import javafx.scene.layout.*;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
+import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
 import java.net.http.HttpClient;
@@ -36,12 +39,25 @@ public class ListaCartaController {
     @FXML
     private ComboBox<String> comboBoxCategoria;
 
+    private ContextMenu contextMenu;
+    private MenuItem menuEditar;
+
+    private MenuItem menuEliminar ;
+
+
     private static final int ITEMS_PER_PAGE = 16; // 4 filas x 4 columnas
     private List<Plato> articulos = new ArrayList<>(); // Inicialización de la lista
     private int categoriaSeleccionada = 0; // Categoría por defecto
 
     @FXML
     public void initialize() {
+        contextMenu = new ContextMenu();
+        menuEditar = new MenuItem("Editar");
+        menuEliminar = new MenuItem("Eliminar");
+
+        contextMenu.getItems().addAll(menuEditar, menuEliminar);
+
+
         // Cargar categorías en el ComboBox
         comboBoxCategoria.getItems().addAll("Entrantes", "Principales", "Postres", "Bebidas");
         comboBoxCategoria.getSelectionModel().selectFirst(); // Selecciona la primera categoría
@@ -81,7 +97,7 @@ public class ListaCartaController {
 
         List<Plato> platosEnPagina = articulos.subList(fromIndex, toIndex);
 
-        AnchorPane anchorPane = new AnchorPane();
+        VBox vBox = new VBox();
         GridPane grid = new GridPane();
         grid.setHgap(10); // Espacio horizontal entre elementos
         grid.setVgap(10); // Espacio vertical entre elementos
@@ -96,18 +112,29 @@ public class ListaCartaController {
             }
 
             // Crear AnchorPane para cada artículo, incluyendo la imagen y las etiquetas
-            AnchorPane itemBox = createItemBox(plato);
+            VBox itemBox = createItemBox(plato);
+            itemBox.setOnMouseClicked(event -> {
+                if (event.getButton() == MouseButton.SECONDARY) {
+                    contextMenu.show(itemBox, event.getScreenX(), event.getScreenY());
+                    menuEditar.setOnAction(e -> {
+                        abrirModalEdicion(plato);
+                    });
+                    menuEliminar.setOnAction(e -> {
+                        eliminarArticulo(plato);
+                    });
+                }
+            });
 
             // Limitar el tamaño de cada itemBox a un tamaño fijo de celda
-            itemBox.setPrefSize(200, 200); // Tamaño de cada celda, ajustable según lo necesites
-            itemBox.setMaxSize(200, 200); // Evita que el itemBox crezca más allá de su celda
+            itemBox.setPrefSize(200, 200);
+            itemBox.setMaxSize(200, 200);
 
             // Agregar al GridPane
             grid.add(itemBox, column, row);
 
             // Restringir el crecimiento de las celdas
-            GridPane.setHgrow(itemBox, Priority.NEVER); // No permitir que el itemBox crezca horizontalmente
-            GridPane.setVgrow(itemBox, Priority.NEVER); // No permitir que el itemBox crezca verticalmente
+            GridPane.setHgrow(itemBox, Priority.NEVER);
+            GridPane.setVgrow(itemBox, Priority.NEVER);
 
             column++;
             if (column == 4) { // 4 columnas
@@ -116,19 +143,21 @@ public class ListaCartaController {
             }
         }
 
-        // Ajustar el tamaño total del GridPane
-        grid.setPrefSize(800, 600); // Ajusta el tamaño del GridPane según la ventana
+        // Ajustar el tamaño mínimo del GridPane
+        grid.setMinSize(800, 600); // Tamaño mínimo del GridPane
 
-        // Añadir el GridPane al AnchorPane
-        anchorPane.getChildren().add(grid);
-        AnchorPane.setTopAnchor(grid, 0.0); // Alinear al tope
-        AnchorPane.setLeftAnchor(grid, 0.0); // Alinear a la izquierda
+        // Añadir el GridPane al VBox
+        vBox.getChildren().add(grid);
 
-        return anchorPane;
+        // Establecer el tamaño mínimo del VBox
+        vBox.setMinSize(200, 200); // Tamaño mínimo del VBox
+        vBox.setAlignment(Pos.CENTER); // Alinear el VBox al centro
+
+        return vBox;
     }
 
 
-    private AnchorPane createItemBox(Plato plato) {
+    private VBox createItemBox(Plato plato) {
         String imagenBase64 = plato.getImagenPlato();
         Image image;
 
@@ -157,21 +186,14 @@ public class ListaCartaController {
         precioLabel.setStyle("-fx-text-fill: green;");
 
         // Crear AnchorPane para el artículo
-        AnchorPane itemBox = new AnchorPane();
-        itemBox.setPrefSize(250, 250); // Establecer tamaño preferido de 250x250
+        VBox itemBox = new VBox();
+        itemBox.setPrefSize(Region.USE_COMPUTED_SIZE, Region.USE_COMPUTED_SIZE);
 
         // Agregar elementos al AnchorPane
         itemBox.getChildren().addAll(imageView, nombreLabel, precioLabel);
 
         // Configurar el ajuste de los elementos dentro del AnchorPane
-        AnchorPane.setTopAnchor(imageView, 0.0);  // Alinear al tope
-        AnchorPane.setLeftAnchor(imageView, 0.0); // Alinear a la izquierda
-        AnchorPane.setRightAnchor(imageView, 0.0); // Ocupar el espacio horizontal
-        AnchorPane.setBottomAnchor(nombreLabel, 30.0); // Espacio desde el fondo para el nombre
-        AnchorPane.setLeftAnchor(nombreLabel, 0.0); // Alinear a la izquierda
-
-        AnchorPane.setBottomAnchor(precioLabel, 10.0); // Espacio desde el fondo para el precio
-        AnchorPane.setLeftAnchor(precioLabel, 0.0); // Alinear a la izquierda
+        itemBox.setAlignment(Pos.CENTER); // Alinear al centro
 
         // Vincular el tamaño del ImageView a su contenedor
         imageView.fitWidthProperty().bind(itemBox.widthProperty().multiply(0.9)); // El ImageView ocupa el 90% del ancho del AnchorPane
@@ -200,8 +222,6 @@ public class ListaCartaController {
 
             if (response.statusCode() == 200) {
                 String responseBody = response.body();
-                System.out.println("Consulta exitosa. Respuesta: " + responseBody);
-
                 Plato[] platos = new Gson().fromJson(responseBody, Plato[].class);
                 List<Plato> listaPlatos = new ArrayList<>();
                 for (Plato plato : platos) {
@@ -217,5 +237,68 @@ public class ListaCartaController {
             e.printStackTrace();
         }
         return new ArrayList<>(); // Retorna lista vacía en caso de error
+    }
+
+
+    private void abrirModalEdicion(Plato articulo) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/desktopapprestaurant/añadirArticulo.fxml"));
+            Parent root = loader.load();
+
+            AñadirArticuloController editarController = loader.getController();
+            editarController.cargarDatos(articulo);
+
+            Stage stage = new Stage();
+            stage.setTitle("Editar Articulo");
+            stage.initModality(Modality.WINDOW_MODAL);
+            stage.setScene(new Scene(root));
+            stage.showAndWait();
+            cargarArticulos(0);
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void eliminarArticulo(Plato articulo) {
+        try {
+            HttpClient client = HttpClient.newHttpClient();
+            HttpRequest request = HttpRequest.newBuilder()
+                    .uri(new URI("http://localhost:8080/api/v1/platos/" + articulo.getIdPlato()))
+                    .header("Content-Type", "application/json")
+                    .DELETE()
+                    .build();
+
+            Alert confirmDelete = new Alert(Alert.AlertType.CONFIRMATION);
+            confirmDelete.setTitle("Eliminar Articulo");
+            confirmDelete.setHeaderText("¿Estás seguro de que deseas eliminar el articulo?");
+            confirmDelete.setContentText("Esta acción no se puede deshacer.");
+            if (confirmDelete.showAndWait().get() == ButtonType.OK) {
+
+                HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+
+                if (response.statusCode() == 200) {
+                    System.out.println("Articulo eliminado con éxito: " + response.body());
+                    Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                    alert.setTitle("Articulo eliminado");
+                    alert.setHeaderText("Se ha eliminado el articulo con éxito.");
+                    alert.setContentText("El articulo se ha eliminado correctamente.");
+                    alert.showAndWait();
+                    handleCategoriaSeleccionada();
+                } else {
+                    System.out.println("Error al eliminar el articulo: " + response.statusCode());
+                    Alert alert = new Alert(Alert.AlertType.ERROR);
+                    alert.setTitle("Error");
+                    alert.setHeaderText("Error al eliminar el articulo.");
+                    alert.setContentText("Ha ocurrido un error al eliminar el articulo. Por favor, inténtelo de nuevo.");
+                    alert.showAndWait();
+                }
+            }
+
+
+        } catch (Exception e) {
+            e.printStackTrace();
+
+        }
     }
 }

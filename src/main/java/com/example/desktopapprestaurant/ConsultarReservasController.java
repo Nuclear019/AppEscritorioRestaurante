@@ -183,8 +183,36 @@ public class ConsultarReservasController {
     }
 
     private void deleteReserva(Reserva reserva) {
-        reservas.remove(reserva);
-        tableView.setItems(FXCollections.observableList(reservas));
+        try {
+            HttpClient client = HttpClient.newHttpClient();
+            HttpRequest request = HttpRequest.newBuilder()
+                    .uri(new URI("http://localhost:8080/api/v1/reservas/" + reserva.getIdReserva()))
+                    .header("Content-Type", "application/json")
+                    .DELETE()
+                    .build();
+
+            Alert confirmDeleteReserva = new Alert(Alert.AlertType.CONFIRMATION);
+            confirmDeleteReserva.setTitle("Eliminar Reserva");
+            confirmDeleteReserva.setHeaderText("¿Estás seguro de que deseas eliminar la reserva?");
+            confirmDeleteReserva.setContentText("Esta acción no se puede deshacer.");
+            confirmDeleteReserva.showAndWait();
+            if (confirmDeleteReserva.getResult() != ButtonType.OK) {
+                return;
+            }
+
+            HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+
+            if (response.statusCode() == 200) {
+                mostrarMensaje("Reserva eliminada con éxito.");
+            } else {
+                System.out.println("Error al eliminar la reserva: " + response.statusCode());
+                mostrarMensaje("Error al eliminar la reserva.");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            mostrarMensaje("Error al eliminar la reserva.");
+        }
+        reservas= getReservas();
     }
 
     private void abrirModalEdicion(Reserva reserva) {

@@ -32,8 +32,13 @@ public class MainController {
     private MenuItem menuItemAñadirArticulo;
 
 
+
+
+
     @FXML
-    public void initialize() {
+    public void initialize() {;
+
+
         cargarVista("listaReservas.fxml");
         menuItemConsultarReservas.setOnAction(event -> cargarVista("listaReservas.fxml"));
         menuItemAñadirReserva.setOnAction(event -> mostrarModal("añadirReserva.fxml"));
@@ -97,6 +102,11 @@ public class MainController {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    public void notificarIncidencia() {
+        // Cargar la vista de notificación de incidencia
+        mostrarModal("notificarIncidencia.fxml");
     }
 
 

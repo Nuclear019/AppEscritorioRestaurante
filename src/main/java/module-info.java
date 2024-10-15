@@ -4,10 +4,12 @@ module com.example.desktopapprestaurant {
     requires com.google.gson;  // Aquí agregamos la dependencia de Gson
     requires java.sql;
 
+
     requires org.controlsfx.controls;
     requires com.dlsc.formsfx;
     requires org.kordamp.bootstrapfx.core;
     requires java.net.http;
+    requires jakarta.mail;
 
     opens com.example.desktopapprestaurant to javafx.fxml;
     exports com.example.desktopapprestaurant;

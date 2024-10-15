@@ -9,6 +9,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
+import javafx.stage.Screen;
 import javafx.stage.Stage;
 
 import java.io.IOException;
@@ -41,14 +42,19 @@ public class LoginController {
                 FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/desktopapprestaurant/MainWindow.fxml"));
                 Parent root = loader.load();
 
-                // Obtener el controlador de la nueva ventana
-                MainController mainWindowController = loader.getController();
-                // Pasar el nombre de usuario al nuevo controlador si es necesario
+
 
                 // Obtener la instancia del Stage actual y cambiar a la nueva escena
                 Stage stage = (Stage) txtUsername.getScene().getWindow();
                 stage.setScene(new Scene(root));
+
+                stage.setTitle("Restaurant App");
+                if (!stage.isMaximized()){
+                    stage.setMaximized(true);
+                    stage.centerOnScreen();
+                }
                 stage.setResizable(true);
+
                 stage.show();
             } catch (IOException e) {
                 e.printStackTrace();
@@ -76,7 +82,6 @@ public class LoginController {
             if (response.statusCode() == 200) {
                 String responseBody = response.body();
                 System.out.println("Login exitoso. Token: " + responseBody);
-                userLogeado = new User(); // Crea tu objeto User aquí según sea necesario
                 return true; // Devuelve true si el login es exitoso
             } else {
                 // Si el inicio de sesión falla, puedes mostrar un mensaje de error aquí

@@ -5,18 +5,17 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-
 <VBox alignment="TOP_CENTER" prefHeight="605.0" prefWidth="919.0" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.desktopapprestaurant.AñadirArticuloController">
    <children>
         <!-- Título -->
-        <Label fx:id="labelModalActualizarReserva" alignment="TOP_CENTER" prefHeight="25.0" prefWidth="337.0" text="Añadir Plato" textAlignment="CENTER">
+        <Label fx:id="labelModalActualizarArticulo" alignment="TOP_CENTER" prefHeight="25.0" prefWidth="337.0" text="Añadir Plato" textAlignment="CENTER">
             <font>
                 <Font size="21.0" />
             </font>
         </Label>
 
         <!-- Grid para los campos -->
-        <GridPane alignment="TOP_CENTER" hgap="15" prefHeight="480.0" prefWidth="625.0" vgap="15" VBox.vgrow="NEVER">
+        <GridPane alignment="TOP_CENTER" hgap="15" prefHeight="518.0" prefWidth="919.0" vgap="15" VBox.vgrow="NEVER">
             <columnConstraints>
                 <ColumnConstraints hgrow="SOMETIMES" maxWidth="300.0" minWidth="159.0" prefWidth="159.0" />
                 <ColumnConstraints hgrow="SOMETIMES" maxWidth="451.0" minWidth="310.0" prefWidth="451.0" />
@@ -27,6 +26,7 @@
                 <RowConstraints prefHeight="50.0" />
                 <RowConstraints maxHeight="145.0" minHeight="95.0" prefHeight="95.0" />
                 <RowConstraints maxHeight="105.0" minHeight="55.0" prefHeight="105.0" />
+            <RowConstraints minHeight="10.0" prefHeight="50.0" />
                 <RowConstraints prefHeight="50.0" />
             </rowConstraints>
 
@@ -47,8 +47,9 @@
             <ComboBox fx:id="categoriaPlato" promptText="Seleccione una categoría" GridPane.columnIndex="1" GridPane.rowIndex="3" />
 
             <!-- Añadir imagen -->
-            <Button onAction="#seleccionarFoto" text="Añadir foto" GridPane.columnIndex="0" GridPane.rowIndex="4" />
-            <ImageView fx:id="imagenPlato" fitHeight="104.0" fitWidth="146.0" preserveRatio="true" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+            <Button onAction="#seleccionarFoto" text="Añadir foto" GridPane.columnIndex="0" GridPane.rowIndex="5" />
+            <ImageView fx:id="imagenPlato" fitHeight="104.0" fitWidth="146.0" preserveRatio="true" GridPane.columnIndex="1" GridPane.rowIndex="5" />
+         <CheckBox fx:id="articuloDestacado" mnemonicParsing="false" prefHeight="18.0" prefWidth="176.0" text="Articulo destacado" GridPane.columnIndex="1" GridPane.rowIndex="4" />
         </GridPane>
 
         <!-- Botón para guardar -->

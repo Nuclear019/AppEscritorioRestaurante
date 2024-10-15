@@ -1,7 +1,8 @@
-package com.example.desktopapprestaurant;
+ package com.example.desktopapprestaurant;
 
 import com.example.desktopapprestaurant.Model.CategoriaPlato;
 import com.example.desktopapprestaurant.Model.Plato;
+import com.example.desktopapprestaurant.Model.Reserva;
 import com.google.gson.Gson;
 import javafx.event.ActionEvent;
 import javafx.scene.control.*;
@@ -11,6 +12,7 @@ import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.util.StringConverter;
 
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.net.URI;
@@ -19,8 +21,12 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.nio.file.Files;
 import java.util.Base64;
+import java.util.Objects;
 
-public class AñadirArticuloController {
+ public class AñadirArticuloController {
+
+    private final String añadirArticuloUrl = "http://localhost:8080/api/v1/add-plato";
+    private final String actualizarArticuloUrl = "http://localhost:8080/api/v1/platos";
 
 
     public TextField precioPlato;
@@ -28,8 +34,11 @@ public class AñadirArticuloController {
     public TextArea detallesPlato;
     public ImageView imagenPlato;
     public Button btonGuardarPlato;
-    public Label labelModalActualizarReserva;
+    public Label labelModalActualizarArticulo;
     public ComboBox<CategoriaPlato> categoriaPlato;
+     public CheckBox articuloDestacado;
+     private Plato antiguoArticulo;
+    private int tipoOperacion = 0; // 0: Añadir, 1: Actualizar
 
     private Plato nuevoPlato;
 
@@ -112,24 +121,50 @@ public class AñadirArticuloController {
 
 
     public void añadirOActualizarPlato(ActionEvent actionEvent) {
-        nuevoPlato.setIdPlato(0L);
+
+        if (nombrePlato.getText().isEmpty() || precioPlato.getText().isEmpty() || detallesPlato.getText().isEmpty() || categoriaPlato.getSelectionModel().isEmpty()) {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Error");
+            alert.setHeaderText("Campos vacíos");
+            alert.setContentText("Por favor, rellene todos los campos.");
+            alert.showAndWait();
+            return;
+        }
+        long idPlato = antiguoArticulo != null ? antiguoArticulo.getIdPlato() : 0;
         nuevoPlato.setNombrePlato(nombrePlato.getText());
         nuevoPlato.setPrecioPlato(Double.parseDouble(precioPlato.getText()));
         nuevoPlato.setDetallesPlato(detallesPlato.getText());
-
+        nuevoPlato.setIdPlato(idPlato);
+        nuevoPlato.setMasVendido(articuloDestacado.isSelected());
         // Obtener la categoría seleccionada directamente
         Long idCategoriaSeleccionada = obtenerIdCategoriaSeleccionada();
         nuevoPlato.setPlatoCategoria(new CategoriaPlato(idCategoriaSeleccionada, categoriaPlato.getSelectionModel().getSelectedItem().getCategoria()));
 
+        if (nuevoPlato.getImagenPlato()==null){
+            nuevoPlato.setImagenPlato(antiguoArticulo.getImagenPlato());
+        }
 
         // Depuración
 
         try {
-            HttpRequest request = HttpRequest.newBuilder()
-                    .uri(new URI("http://localhost:8080/api/v1/add-plato"))
-                    .header("Content-Type", "application/json")
-                    .POST(HttpRequest.BodyPublishers.ofString(new Gson().toJson(nuevoPlato)))
-                    .build();
+            HttpRequest request;
+            Gson gson = new Gson();
+
+
+            if (tipoOperacion == 0) { // Añadir nueva reserva
+                request = HttpRequest.newBuilder()
+                        .uri(new URI(añadirArticuloUrl))
+                        .header("Content-Type", "application/json")
+                        .POST(HttpRequest.BodyPublishers.ofString(gson.toJson(nuevoPlato)))
+                        .build();
+            } else { // Actualizar reserva existente
+
+                request = HttpRequest.newBuilder()
+                        .uri(new URI(actualizarArticuloUrl + "/" + antiguoArticulo.getIdPlato()))
+                        .header("Content-Type", "application/json")
+                        .PUT(HttpRequest.BodyPublishers.ofString(gson.toJson(nuevoPlato)))
+                        .build();
+            }
 
             HttpResponse<String> response = HttpClient.newHttpClient().send(request, HttpResponse.BodyHandlers.ofString());
 
@@ -158,4 +193,29 @@ public class AñadirArticuloController {
         }
     }
 
-}
+     public void cargarDatos(Plato articulo) {
+         antiguoArticulo = articulo;
+         btonGuardarPlato.setText("Actualizar");
+         labelModalActualizarArticulo.setText("Actualizar reserva");
+         tipoOperacion = 1;
+         nombrePlato.setText(articulo.getNombrePlato());
+         detallesPlato.setText(articulo.getDetallesPlato());
+         precioPlato.setText(articulo.getPrecioPlato().toString());
+
+         // Seleccionar la categoría en el ComboBox
+         CategoriaPlato categoriaSeleccionada = articulo.getPlatoCategoria();
+         if (categoriaSeleccionada != null) {
+             categoriaPlato.getSelectionModel().select(categoriaSeleccionada);
+         }
+
+         articuloDestacado.setSelected(articulo.isMasVendido());
+
+         if (articulo.getImagenPlato() != null) {
+             imagenPlato.setImage(new Image(new ByteArrayInputStream(Base64.getDecoder().decode(articulo.getImagenPlato()))));
+         } else {
+             imagenPlato.setImage(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/image/Logo.png"))));
+         }
+     }
+
+
+ }

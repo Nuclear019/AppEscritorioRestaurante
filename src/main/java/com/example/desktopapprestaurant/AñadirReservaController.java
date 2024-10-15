@@ -22,9 +22,7 @@ import java.util.List;
 
 public class AñadirReservaController {
 
-    private final String añaadirReservaUrl = "http://localhost:8080/api/v1/reservas";
-    private final String actualizarReservaUrl = "http://localhost:8080/api/v1/reservas";
-
+    private final String apiConsultaUrl = "http://localhost:8080/api/v1/reservas";
 
 
     public TextField nombreReserva;
@@ -134,14 +132,14 @@ public class AñadirReservaController {
             HttpRequest request;
             if (tipoOperacion == 0) { // Añadir nueva reserva
                 request = HttpRequest.newBuilder()
-                        .uri(new URI(añaadirReservaUrl))
+                        .uri(new URI(apiConsultaUrl))
                         .header("Content-Type", "application/json")
                         .POST(HttpRequest.BodyPublishers.ofString(gson.toJson(nuevaReserva)))
                         .build();
             } else { // Actualizar reserva existente
 
                 request = HttpRequest.newBuilder()
-                        .uri(new URI(actualizarReservaUrl + "/" + nuevaReserva.getIdReserva()))
+                        .uri(new URI(apiConsultaUrl + "/" + nuevaReserva.getIdReserva()))
                         .header("Content-Type", "application/json")
                         .PUT(HttpRequest.BodyPublishers.ofString(gson.toJson(nuevaReserva)))
                         .build();
